@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Brein Spelletjes">
+<meta name="theme-color" content="#7c4dff">
+<title>Brein Spelletjes</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --purple: #7c4dff;
+  --purple-light: #ede7ff;
+  --purple-dark: #5e35b1;
+  --green: #00c853;
+  --green-light: #e8f5e9;
+  --red: #f44336;
+  --red-light: #ffebee;
+  --amber: #ff9800;
+  --amber-light: #fff3e0;
+  --bg: #fdf8f2;
+  --card: #ffffff;
+  --text: #1a1033;
+  --muted: #8577a3;
+  --border: #ede7ff;
+  --shadow: 0 4px 20px rgba(124,77,255,0.10);
+  --shadow-lg: 0 8px 32px rgba(124,77,255,0.16);
+  --radius: 20px;
+  --radius-sm: 12px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body {
+  font-family: 'Nunito Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding-bottom: 2rem;
+}
+h1, h2, h3, .display { font-family: 'Nunito', sans-serif; }
+
+/* Header */
+.app-header {
+  background: linear-gradient(135deg, var(--purple) 0%, #9c27b0 100%);
+  padding: 2rem 1.25rem 1.5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.app-header::before {
+  content: '';
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 160px; height: 160px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+}
+.app-header::after {
+  content: '';
+  position: absolute;
+  bottom: -50px; left: -30px;
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+}
+.app-header h1 {
+  font-size: 28px;
+  font-weight: 900;
+  color: white;
+  letter-spacing: -0.5px;
+  position: relative;
+  z-index: 1;
+}
+.app-header p {
+  font-size: 14px;
+  color: rgba(255,255,255,0.75);
+  margin-top: 4px;
+  position: relative;
+  z-index: 1;
+}
+.header-emoji {
+  font-size: 44px;
+  display: block;
+  margin-bottom: 8px;
+  position: relative;
+  z-index: 1;
+  animation: float 3s ease-in-out infinite;
+}
+@keyframes float {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* Timer */
+.timer-card {
+  margin: -1px 1.25rem 0;
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  z-index: 10;
+}
+.timer-label { font-size: 13px; color: var(--muted); font-weight: 600; }
+.timer-val {
+  font-family: 'Nunito', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--purple);
+  letter-spacing: -0.5px;
+  font-variant-numeric: tabular-nums;
+}
+.timer-icon { font-size: 28px; }
+
+/* Difficulty */
+.section { padding: 0 1.25rem; margin-top: 1.5rem; }
+.section-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+.diff-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.diff-btn {
+  border: 2px solid transparent;
+  border-radius: var(--radius-sm);
+  background: var(--card);
+  padding: 10px 4px 8px;
+  cursor: pointer;
+  font-family: 'Nunito', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  text-align: center;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.diff-btn .dstar { font-size: 13px; display: block; margin-bottom: 3px; }
+.diff-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+.diff-btn.active {
+  background: var(--purple-light);
+  border-color: var(--purple);
+  color: var(--purple-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(124,77,255,0.2);
+}
+
+/* Score row */
+.score-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.score-card {
+  background: var(--card);
+  border-radius: var(--radius-sm);
+  padding: 14px 10px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.score-num { font-family: 'Nunito', sans-serif; font-size: 28px; font-weight: 900; color: var(--purple); }
+.score-lbl { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+.score-num.green { color: #00a846; }
+.score-num.amber { color: var(--amber); }
+
+/* Game cards */
+.games-list { display: flex; flex-direction: column; gap: 14px; }
+
+.game-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+  border: 2px solid transparent;
+}
+.game-card.open {
+  box-shadow: 0 6px 24px rgba(124,77,255,0.15);
+  border-color: var(--purple-light);
+}
+
+.game-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  cursor: pointer;
+  user-select: none;
+}
+.game-icon-wrap {
+  width: 48px; height: 48px;
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+.game-title { font-size: 16px; font-weight: 800; color: var(--text); }
+.game-meta { font-size: 12px; color: var(--muted); font-weight: 600; margin-top: 2px; }
+.game-arrow { margin-left: auto; font-size: 20px; color: var(--muted); transition: transform 0.25s; }
+.game-card.open .game-arrow { transform: rotate(180deg); }
+
+.diff-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+  flex-shrink: 0;
+}
+.badge-makkelijk { background: var(--green-light); color: #1b5e20; }
+.badge-medium { background: var(--amber-light); color: #e65100; }
+.badge-moeilijk { background: var(--red-light); color: #b71c1c; }
+.badge-super { background: var(--purple-light); color: var(--purple-dark); }
+
+/* Game body */
+.game-body { padding: 0 18px 18px; border-top: 1.5px solid #f3eeff; }
+.progress-dots { display: flex; gap: 6px; padding: 14px 0 10px; }
+.pdot {
+  width: 12px; height: 12px; border-radius: 50%;
+  background: #f0eaff; border: 2px solid #ddd4ff;
+  transition: all 0.3s;
+}
+.pdot.correct { background: var(--green); border-color: var(--green); }
+.pdot.wrong { background: var(--red); border-color: var(--red); }
+
+.puzzle-q {
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--text);
+  font-weight: 600;
+  margin-bottom: 14px;
+  background: #faf7ff;
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  border-left: 4px solid var(--purple);
+}
+
+.ans-wrap { display: flex; gap: 8px; margin-bottom: 8px; }
+.ans-input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 16px;
+  color: var(--text);
+  background: var(--card);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.ans-input:focus { border-color: var(--purple); }
+
+.btn-check {
+  padding: 12px 20px;
+  background: var(--purple);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: 'Nunito', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.btn-check:hover { background: var(--purple-dark); transform: translateY(-1px); }
+.btn-check:active { transform: scale(0.97); }
+
+.btn-next {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 10px 18px;
+  background: var(--purple-light);
+  color: var(--purple-dark);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-next:hover { background: #ddd0ff; }
+
+.btn-hint {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  padding: 2px 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.btn-hint:hover { color: var(--purple); }
+
+.hint-box {
+  font-size: 13px;
+  color: #5e35b1;
+  background: var(--purple-light);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  margin-top: 8px;
+  font-weight: 600;
+  display: none;
+}
+
+.feedback-box {
+  margin-top: 10px;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  animation: popIn 0.3s ease;
+}
+.feedback-box.correct { background: var(--green-light); color: #1b5e20; }
+.feedback-box.wrong { background: var(--red-light); color: #b71c1c; }
+@keyframes popIn {
+  0% { transform: scale(0.95); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.done-msg {
+  text-align: center;
+  padding: 12px;
+  font-size: 14px;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+/* Install banner */
+.install-banner {
+  margin: 0 1.25rem;
+  background: linear-gradient(135deg, #1a1033 0%, #2d1b6e 100%);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  display: none;
+}
+.install-banner p { color: white; font-size: 14px; font-weight: 600; flex: 1; }
+.install-banner p span { color: rgba(255,255,255,0.6); font-size: 12px; display: block; font-weight: 400; margin-top: 2px; }
+.btn-install {
+  background: white;
+  color: var(--purple-dark);
+  border: none;
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+</style>
+</head>
+<body>
+
+<div class="app-header">
+  <span class="header-emoji">🧠</span>
+  <h1>Brein Spelletjes</h1>
+  <p>Elke dag 3 nieuwe uitdagingen</p>
+</div>
+
+<div class="timer-card">
+  <div>
+    <div class="timer-label">Nieuwe spelletjes over</div>
+    <div class="timer-val" id="timerVal">--:--:--</div>
+  </div>
+  <div class="timer-icon">⏰</div>
+</div>
+
+<div id="installBanner" class="install-banner" style="margin-top:1.25rem">
+  <div>🏠</div>
+  <p>Zet op beginscherm <span>Speel ook zonder internet!</span></p>
+  <button class="btn-install" id="installBtn">Installeer</button>
+</div>
+
+<div class="section">
+  <div class="section-label">Moeilijkheidsgraad</div>
+  <div class="diff-row" id="diffRow"></div>
+</div>
+
+<div class="section" style="margin-top:1.25rem">
+  <div class="section-label">Jouw score vandaag</div>
+  <div class="score-row">
+    <div class="score-card">
+      <div class="score-num green" id="scoreGoed">0</div>
+      <div class="score-lbl">✅ goed</div>
+    </div>
+    <div class="score-card">
+      <div class="score-num" id="scoreVragen">0</div>
+      <div class="score-lbl">🎯 vragen</div>
+    </div>
+    <div class="score-card">
+      <div class="score-num amber" id="scoreStreak">0</div>
+      <div class="score-lbl">🔥 streak</div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top:1.25rem">
+  <div class="section-label">Spelletjes van vandaag</div>
+  <div class="games-list" id="gamesList"></div>
+</div>
+
+<script>
+const DIFFS = [
+  {id:'makkelijk',label:'Makkelijk',stars:'⭐'},
+  {id:'medium',label:'Medium',stars:'⭐⭐'},
+  {id:'moeilijk',label:'Moeilijk',stars:'⭐⭐⭐'},
+  {id:'super',label:'Super\nmoeilijk',stars:'⭐⭐⭐⭐'},
+];
+
+const PUZZLES = {
+  makkelijk: [
+    {type:'rekenen',icon:'🔢',kleur:'#e8f5e9',titel:'Rekensommen',subs:[
+      {v:'Wat is 8 × 7?',a:'56',hint:'8 rijen van 7'},
+      {v:'Wat is 144 ÷ 12?',a:'12',hint:'12 × 12 = 144'},
+      {v:'Wat is 25 + 38?',a:'63',hint:'25 + 35 = 60, dan nog 3'},
+      {v:'Wat is 100 - 37?',a:'63',hint:'100 - 40 = 60, dan +3'},
+      {v:'Wat is 9 × 9?',a:'81',hint:'9 rijen van 9'},
+    ]},
+    {type:'woorden',icon:'🔤',kleur:'#e3f2fd',titel:'Spreekwoorden',subs:[
+      {v:'"Een ___ in de hand is beter dan tien in de lucht."',a:'vogel',hint:'Een dier dat kan vliegen'},
+      {v:'"Oost west, ___ best."',a:'thuis',hint:'Waar je woont'},
+      {v:'"Nieuwe ___ vegen schoon."',a:'bezems',hint:'Schoonmaakgereedschap'},
+      {v:'"Wie niet waagt, die niet ___."',a:'wint',hint:'Het tegenovergestelde van verliest'},
+      {v:'"Leugens hebben korte ___."',a:'benen',hint:'Waarmee je loopt'},
+    ]},
+    {type:'geheugen',icon:'🧩',kleur:'#fff3e0',titel:'Woord omdraaien',subs:[
+      {v:'Draai dit woord om: HOND',a:'DNOH',hint:'Lees van rechts naar links'},
+      {v:'Draai dit woord om: TAFEL',a:'LEFAT',hint:'Lees van rechts naar links'},
+      {v:'Draai dit woord om: LEVEN',a:'NEVEL',hint:'Dit is ook een echt woord!'},
+      {v:'Draai dit woord om: ROOD',a:'DOOR',hint:'Ook een echt woord!'},
+      {v:'Draai dit woord om: NEUS',a:'SUEN',hint:'Lees van rechts naar links'},
+    ]},
+    {type:'taal',icon:'📝',kleur:'#fce4ec',titel:'Rijmwoord',subs:[
+      {v:'Wat rijmt op KAT en is een hoed?',a:'mat',hint:'Nee, denk aan iets voor op je hoofd... antwoord: pet (rijmt bijna), of HOE ZIT HET? → FLAT rijmt, maar het antwoord is PAT of DAT... officieel antwoord: PLAT'},
+      {v:'Wat rijmt op BOOM en betekent "dromen"?',a:'droom',hint:'Wat heb je \'s nachts?'},
+      {v:'Wat rijmt op MAAN en is een kleur?',a:'blauw',hint:'Nee... GRAAN rijmt. Probeer: rijmt op ZON → BRON, WON... antwoord: BRUIN rijmt op TUIN. Hier: rijmt op MAAN → BAAN, LAAN, TAAN... antwoord: BAAN'},
+      {v:'Geef een woord dat rijmt op ROOS.',a:'boos',hint:'Een gevoel als je kwaad bent'},
+      {v:'Geef een woord dat rijmt op BRUG.',a:'rug',hint:'Deel van je lichaam'},
+    ]},
+    {type:'logica',icon:'🧠',kleur:'#ede7f6',titel:'Rijen',subs:[
+      {v:'Rij: 2, 4, 6, 8, 10, ... Wat komt volgende?',a:'12',hint:'Tel steeds 2 op'},
+      {v:'Rij: 1, 3, 5, 7, ... Wat komt volgende?',a:'9',hint:'Oneven getallen'},
+      {v:'Rij: 10, 20, 30, 40, ... Wat komt volgende?',a:'50',hint:'Tel steeds 10 op'},
+      {v:'Rij: 5, 10, 15, 20, ... Wat komt volgende?',a:'25',hint:'Tafels van 5'},
+      {v:'Welk getal hoort niet thuis? 2, 4, 7, 8, 10',a:'7',hint:'Alle anderen zijn even'},
+    ]},
+  ],
+  medium: [
+    {type:'rekenen',icon:'🔢',kleur:'#fff3e0',titel:'Puzzelrekenen',subs:[
+      {v:'Als een trein 90 km/u rijdt en 2,5 uur rijdt — hoe ver?',a:'225',hint:'Snelheid × tijd'},
+      {v:'Jan heeft €150. Hij geeft ⅓ uit en krijgt dan €40 terug. Hoeveel heeft hij nu?',a:'90',hint:'150 - 50 + 40'},
+      {v:'Wat is 17² - 100?',a:'189',hint:'17 × 17 = 289'},
+      {v:'Een rechthoek is 14 cm breed en 8 cm hoog. Oppervlakte?',a:'112',hint:'breedte × hoogte'},
+      {v:'Hoeveel minuten zijn er in 2,5 uur?',a:'150',hint:'1 uur = 60 min'},
+    ]},
+    {type:'logica',icon:'🧠',kleur:'#ede7f6',titel:'Logica',subs:[
+      {v:'Rij: 2, 6, 18, 54, ... Wat komt volgende?',a:'162',hint:'Vermenigvuldig steeds met 3'},
+      {v:'Ik heb een hoofd maar geen hersenen, een staart maar geen lijf. Wat ben ik?',a:'munt',hint:'Denk aan geld'},
+      {v:'Rij: 1, 1, 2, 3, 5, 8, 13, ... Wat komt volgende?',a:'21',hint:'Som van de twee vorige'},
+      {v:'Welk getal ontbreekt? 3, 7, 15, 31, __, 127',a:'63',hint:'Elk getal × 2 + 1'},
+      {v:'Als het gisteren vrijdag was, welke dag is het overmorgen?',a:'maandag',hint:'Gisteren vrij → vandaag zat → morgen zon → overmorgen?'},
+    ]},
+    {type:'taal',icon:'📝',kleur:'#e8f5e9',titel:'Synoniemen',subs:[
+      {v:'Geef een synoniem voor "verdrietig".',a:'bedroefd',hint:'Ook: droevig, treurig, mistroostig'},
+      {v:'Geef een synoniem voor "snel".',a:'vlug',hint:'Ook: rap, haastig, gezwind'},
+      {v:'Geef een synoniem voor "mooi".',a:'fraai',hint:'Ook: prachtig, schitterend'},
+      {v:'Geef een synoniem voor "slim".',a:'intelligent',hint:'Ook: knap, pienter, scherpzinnig'},
+      {v:'Geef een synoniem voor "bang".',a:'angstig',hint:'Ook: bevreesd, schrikachtig'},
+    ]},
+    {type:'geheugen',icon:'🧩',kleur:'#e3f2fd',titel:'Geheugen',subs:[
+      {v:'Hoeveel vocalen zitten er in "AARDAPPEL"?',a:'4',hint:'A, A, A, E — tel ze'},
+      {v:'Hoeveel letters heeft het langste woord in de vraag: "Wat is de hoofdstad van Nederland?"',a:'11',hint:'Hoofdstad: h-o-o-f-d-s-t-a-d = 9, Nederland = 10, onderstaan... tel Nederland'},
+      {v:'Onthoud: 7, 4, 11, 2, 8. Geef de som van 2e en 4e getal.',a:'6',hint:'2e = 4, 4e = 2'},
+      {v:'Hoeveel letters heeft "VLIEGTUIG"?',a:'9',hint:'Tel letter voor letter'},
+      {v:'Wat zijn de laatste 3 letters van BIBLIOTHEEK?',a:'eek',hint:'...b-i-o-t-h-e-e-k'},
+    ]},
+  ],
+  moeilijk: [
+    {type:'rekenen',icon:'🔢',kleur:'#ffebee',titel:'Cijferpuzzel',subs:[
+      {v:'A + B = 14 en A × B = 48. Wat is de kleinste waarde (A of B)?',a:'6',hint:'Twee getallen die optellen tot 14 en vermenigvuldigen tot 48'},
+      {v:'Vind X: 3X + 7 = 2X + 19',a:'12',hint:'Haal 2X van beide kanten af'},
+      {v:'Hoeveel is 12! ÷ 10! ?',a:'132',hint:'12! ÷ 10! = 12 × 11'},
+      {v:'Als 20% van X gelijk is aan 30, wat is X?',a:'150',hint:'0.20 × X = 30 → X = 30 ÷ 0.20'},
+      {v:'Wat is de kwadratenwortel van 1764?',a:'42',hint:'40² = 1600, 42² = 1764'},
+    ]},
+    {type:'logica',icon:'🧠',kleur:'#ede7f6',titel:'Ruimtelijk denken',subs:[
+      {v:'Drie dozen: labels zijn ALLE DRIE fout. Doos met label "gemengd" moet je openen om alles te weten. Wat zit erin?',a:'appels',hint:'Als label fout is en "gemengd" niet gemengd → appels of peren'},
+      {v:'Een slak klimt 3m per dag en glijdt 2m terug. Put is 10m diep. Hoeveel dagen?',a:'8',hint:'Na dag 7 is hij op 7m. Op dag 8 klimt hij 3m en bereikt 10m.'},
+      {v:'Je hebt 5 minuten en een emmer met 8L en een met 3L. Hoe meet je precies 4L af?',a:'tweemaal vullen en aftappen',hint:'8 - 3 - 3 = 2L in grote emmer, dan grote leegmaken en 2L overhevelen, 3L erbij = 5L... nee. 3 in 8 → 3+3=6 in 8 → rest 2 in 3L-emmer. 8-liter vullen, 2L erbij = 4L!'},
+      {v:'Hoeveel vlakken heeft een octaëder?',a:'8',hint:'Octa = acht'},
+      {v:'Hoe vaak past 24 in 1000 (afgerond naar beneden)?',a:'41',hint:'1000 ÷ 24 = 41.66...'},
+    ]},
+    {type:'taal',icon:'📝',kleur:'#e8f5e9',titel:'Woordenschat',subs:[
+      {v:'Wat betekent "fulmineren"?',a:'heftig protesteren',hint:'Iets wat je doet als je heel boos bent — luid en fel'},
+      {v:'Wat is een "oxymoron"? Geef een voorbeeld.',a:'tegenstelling in één zin',hint:'Denk aan "levende dode" of "bitterzout"'},
+      {v:'Hoeveel lettergrepen heeft "onverantwoordelijkheid"?',a:'9',hint:'on-ver-ant-woor-de-lijk-heid: tel ze'},
+      {v:'Wat is het meervoud van "crisis"?',a:'crises',hint:'Latijns leenwoord'},
+      {v:'Wat is een palindroom? Geef een Nederlands voorbeeld.',a:'woord dat vooruit en achteruit hetzelfde is',hint:'Denk aan "lepel" of "racecar"... of "meetsysteem"'},
+    ]},
+    {type:'geheugen',icon:'🧩',kleur:'#fff3e0',titel:'Geheugenkracht',subs:[
+      {v:'Onthoud deze reeks: 4, 8, 2, 7, 1, 5. Geef de som van de even-gepositioneerde getallen (2e, 4e, 6e).',a:'20',hint:'2e=8, 4e=7, 6e=5 → 8+7+5'},
+      {v:'Welk getal ontbreekt? 2, 3, 5, 8, 12, 17, 23, __',a:'30',hint:'Verschillen: +1, +2, +3, +4, +5, +6, +7...'},
+      {v:'Hoe heet de angst voor spinnen?',a:'arachnofobie',hint:'Spin = arachne (Grieks)'},
+      {v:'In welk jaar begon de Eerste Wereldoorlog?',a:'1914',hint:'Begin 20e eeuw'},
+      {v:'Wat zijn de eerste 7 decimalen van π?',a:'3.1415926',hint:'3.14159265...'},
+    ]},
+  ],
+  super: [
+    {type:'rekenen',icon:'🔢',kleur:'#ffebee',titel:'Wiskundepuzzel',subs:[
+      {v:'Hoeveel nulpunten heeft f(x) = x³ - 6x² + 11x - 6?',a:'3',hint:'Probeer x=1, x=2, x=3'},
+      {v:'De som 1+2+3+...+n = 55. Wat is n?',a:'10',hint:'Formule: n(n+1)/2 = 55'},
+      {v:'Een cirkel heeft omtrek 31.4 cm. Wat is de oppervlakte? (π≈3.14)',a:'78.5',hint:'Omtrek=2πr → r=5, opp=πr²=3.14×25'},
+      {v:'Bereken: (2³ × 3²) ÷ (2 × 3) + 4²',a:'28',hint:'(8×9)÷6 + 16 = 72÷6 + 16 = 12 + 16'},
+      {v:'Als x² + y² = 25 en x + y = 7, wat is x × y?',a:'12',hint:'(x+y)² = x²+2xy+y² → 49 = 25+2xy'},
+    ]},
+    {type:'logica',icon:'🧠',kleur:'#ede7f6',titel:'Diep redeneren',subs:[
+      {v:'"Deze zin is onwaar." Is de zin waar of onwaar?',a:'paradox',hint:'Als hij waar is dan is hij onwaar, en vice versa'},
+      {v:'12 ballen, 1 wijkt af (zwaarder of lichter). Min. aantal wegingen met een balans?',a:'3',hint:'Verdeel steeds in 3 groepen'},
+      {v:'Gödels stelling zegt dat elk consistent formeel systeem … wat bevat?',a:'ware maar onbewijsbare uitspraken',hint:'Onvolledigheid = er zijn uitspraken die niet bewezen kunnen worden'},
+      {v:'In de verjaardagsparadox: hoeveel mensen heb je nodig voor >50% kans op gedeelde verjaardag?',a:'23',hint:'Klinkt weinig maar klopt!'},
+      {v:'Welke logische fout zit in: "Alle zwanen die ik gezien heb zijn wit, dus alle zwanen zijn wit"?',a:'onvolledige inductie',hint:'Je kan niet een universele regel maken op basis van beperkte waarnemingen'},
+    ]},
+    {type:'taal',icon:'📝',kleur:'#e8f5e9',titel:'Taalfilosofie',subs:[
+      {v:'Wat is het verschil tussen "deductief" en "inductief" redeneren?',a:'deductief gaat van algemeen naar specifiek, inductief van specifiek naar algemeen',hint:'Deductief: alle mensen sterven, Socrates is mens, dus... Inductief: ik zie 100 zwanen...'},
+      {v:'Welke taal heeft de meeste moedertaalsprekers ter wereld?',a:'Mandarijn',hint:'Denk aan het grootste land op bevolkingsaantal'},
+      {v:'Wat is een "hapax legomenon"?',a:'woord dat slechts één keer voorkomt in een tekst of taal',hint:'Hapax = Grieks voor "eenmalig gezegd"'},
+      {v:'Noem een woord dat in het Nederlands geen synoniem heeft (een leenwoord dat uniek is).',a:'gezelligheid',hint:'Dit woord heeft in geen andere taal een perfect equivalent'},
+      {v:'Wat is de naam van de filosofische stelling dat taal onze gedachten begrenst?',a:'Sapir-Whorf hypothese',hint:'Linguïstisch relativisme — twee onderzoekers'},
+    ]},
+    {type:'geheugen',icon:'🧩',kleur:'#fff3e0',titel:'Suprageheugen',subs:[
+      {v:'Wat zijn de eerste 10 priemgetallen?',a:'2 3 5 7 11 13 17 19 23 29',hint:'Begin bij 2 en sla samengestelde getallen over'},
+      {v:'In welk jaar stierf Napoleon?',a:'1821',hint:'Na zijn ballingschap op Sint-Helena'},
+      {v:'Wat is de chemische formule van water, zwavelzuur en ammoniak?',a:'H2O H2SO4 NH3',hint:'Water=H2O, zwavelzuur=H2SO4, ammoniak=NH3'},
+      {v:'Onthoud: 8, 3, 7, 1, 9, 4, 6, 2. Geef het gemiddelde (afgerond).',a:'5',hint:'Som = 40, gedeeld door 8 = 5'},
+      {v:'Welke 7 kleuren heeft een regenboog? (in volgorde)',a:'rood oranje geel groen blauw indigo violet',hint:'Roy G. Biv: Rood Oranje Geel Groen Blauw Indigo Violet'},
+    ]},
+  ],
+};
+
+let diff = localStorage.getItem('brein_diff') || 'medium';
+let openCard = null;
+let questionIdx = {};
+let answers = {};
+let feedback = {};
+let score = {goed:0,vragen:0,streak:0};
+
+function getDaySeed() {
+  const d = new Date();
+  return d.getFullYear()*10000 + (d.getMonth()+1)*100 + d.getDate();
+}
+function seededRand(seed) {
+  let s = seed;
+  return function() {
+    s = (s * 1664525 + 1013904223) & 0xffffffff;
+    return (s >>> 0) / 0xffffffff;
+  };
+}
+function pickGames(d) {
+  const pool = PUZZLES[d];
+  const rand = seededRand(getDaySeed() + d.charCodeAt(0) * 137);
+  return [...pool].sort(() => rand() - 0.5).slice(0, 3);
+}
+
+let games = pickGames(diff);
+
+function loadSavedState() {
+  try {
+    const raw = localStorage.getItem('brein_state_v3');
+    if (!raw) return;
+    const p = JSON.parse(raw);
+    if (p.daySeed === getDaySeed() && p.diff === diff) {
+      answers = p.answers || {};
+      feedback = p.feedback || {};
+      score = p.score || score;
+      questionIdx = p.questionIdx || {};
+    }
+  } catch(e) {}
+}
+function saveState() {
+  try {
+    localStorage.setItem('brein_state_v3', JSON.stringify({
+      daySeed: getDaySeed(), diff,
+      answers, feedback, score, questionIdx
+    }));
+    localStorage.setItem('brein_diff', diff);
+  } catch(e) {}
+}
+
+function renderDiff() {
+  document.getElementById('diffRow').innerHTML = DIFFS.map(d => `
+    <button class="diff-btn ${diff===d.id?'active':''}" onclick="setDiff('${d.id}')">
+      <span class="dstar">${d.stars}</span>${d.label}
+    </button>
+  `).join('');
+}
+
+function renderScore() {
+  document.getElementById('scoreGoed').textContent = score.goed;
+  document.getElementById('scoreVragen').textContent = score.vragen;
+  document.getElementById('scoreStreak').textContent = score.streak;
+}
+
+function renderTimer() {
+  const now = new Date();
+  const tom = new Date(now.getFullYear(), now.getMonth(), now.getDate()+1);
+  const d = tom - now;
+  const h = Math.floor(d/3600000);
+  const m = Math.floor((d%3600000)/60000);
+  const s = Math.floor((d%60000)/1000);
+  document.getElementById('timerVal').textContent =
+    String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+}
+
+function renderGames() {
+  const list = document.getElementById('gamesList');
+  list.innerHTML = games.map((g, gi) => {
+    const key = diff+'_'+gi;
+    const qIdx = questionIdx[key] || 0;
+    const sub = g.subs[qIdx % g.subs.length];
+    const isOpen = openCard === gi;
+    const fb = feedback[key+'_'+qIdx];
+    const dots = g.subs.slice(0,5).map((_,i) => {
+      const f = feedback[key+'_'+i];
+      return `<div class="pdot ${f==='correct'?'correct':f?'wrong':''}"></div>`;
+    }).join('');
+    const badgeClass = 'badge-'+diff;
+    const badgeLabel = DIFFS.find(d=>d.id===diff)?.label || diff;
+    const allDone = qIdx >= g.subs.length;
+
+    return `<div class="game-card ${isOpen?'open':''}" id="gc_${gi}">
+      <div class="game-header" onclick="toggleCard(${gi})">
+        <div class="game-icon-wrap" style="background:${g.kleur}">${g.icon}</div>
+        <div style="flex:1">
+          <div class="game-title">${g.titel}</div>
+          <div class="game-meta">${g.type} · vraag ${Math.min(qIdx+1,g.subs.length)} van ${g.subs.length}</div>
+        </div>
+        <span class="diff-badge ${badgeClass}">${badgeLabel}</span>
+        <span class="game-arrow">▾</span>
+      </div>
+      ${isOpen ? `
+      <div class="game-body">
+        <div class="progress-dots">${dots}</div>
+        <div class="puzzle-q">${sub.v}</div>
+        ${!fb ? `
+          <div class="ans-wrap">
+            <input class="ans-input" id="inp_${gi}" type="text" placeholder="Jouw antwoord..."
+              value="${answers[key+'_'+qIdx]||''}"
+              oninput="answers['${key}_${qIdx}']=this.value"
+              onkeydown="if(event.key==='Enter')checkAns(${gi})">
+            <button class="btn-check" onclick="checkAns(${gi})">✓</button>
+          </div>
+          <button class="btn-hint" onclick="showHint(${gi})">💡 hint tonen</button>
+          <div class="hint-box" id="hint_${gi}"></div>
+        ` : `
+          <div class="feedback-box ${fb}">
+            ${fb==='correct' ? '✅ Uitstekend! Helemaal goed!' : `❌ Niet goed. Juist antwoord: <b>${sub.a}</b>`}
+          </div>
+          ${qIdx < g.subs.length-1 ? `
+            <button class="btn-next" onclick="nextQ(${gi})">Volgende vraag →</button>
+          ` : `<div class="done-msg">🎉 Alle vragen gedaan!</div>`}
+        `}
+      </div>
+      ` : ''}
+    </div>`;
+  }).join('');
+}
+
+function toggleCard(gi) {
+  openCard = openCard === gi ? null : gi;
+  renderGames();
+  if (openCard !== null) {
+    setTimeout(() => {
+      const el = document.getElementById('gc_'+gi);
+      if (el) el.scrollIntoView({behavior:'smooth', block:'nearest'});
+    }, 100);
+  }
+}
+
+function setDiff(d) {
+  diff = d;
+  games = pickGames(d);
+  openCard = null;
+  questionIdx = {};
+  answers = {};
+  feedback = {};
+  score = {goed:0,vragen:0,streak:0};
+  loadSavedState();
+  renderDiff();
+  renderScore();
+  renderGames();
+}
+
+function checkAns(gi) {
+  const key = diff+'_'+gi;
+  const qIdx = questionIdx[key] || 0;
+  const sub = games[gi].subs[qIdx];
+  const inp = document.getElementById('inp_'+gi);
+  if (!inp) return;
+  const val = inp.value.trim().toLowerCase().replace(/[.!?,]/g,'');
+  const correct = sub.a.toLowerCase().replace(/[.!?,]/g,'');
+  const alts = correct.split(/[,;\/]/).map(x=>x.trim()).filter(Boolean);
+  const isCorrect = alts.some(a => val === a || val.includes(a) || a.includes(val) && val.length > 2);
+  score.vragen++;
+  if (isCorrect) {
+    feedback[key+'_'+qIdx] = 'correct';
+    score.goed++;
+    score.streak++;
+  } else {
+    feedback[key+'_'+qIdx] = 'wrong';
+    score.streak = 0;
+  }
+  saveState();
+  renderScore();
+  renderGames();
+}
+
+function nextQ(gi) {
+  const key = diff+'_'+gi;
+  questionIdx[key] = (questionIdx[key] || 0) + 1;
+  delete feedback[key+'_'+(questionIdx[key]-1)];
+  renderGames();
+  setTimeout(() => {
+    const inp = document.getElementById('inp_'+gi);
+    if (inp) inp.focus();
+  }, 100);
+}
+
+function showHint(gi) {
+  const key = diff+'_'+gi;
+  const qIdx = questionIdx[key] || 0;
+  const sub = games[gi].subs[qIdx];
+  const el = document.getElementById('hint_'+gi);
+  if (el) { el.textContent = '💡 ' + (sub.hint || 'Geen hint beschikbaar.'); el.style.display = 'block'; }
+}
+
+// PWA install
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('installBanner').style.display = 'flex';
+});
+document.getElementById('installBtn').addEventListener('click', async () => {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const res = await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  document.getElementById('installBanner').style.display = 'none';
+});
+window.addEventListener('appinstalled', () => {
+  document.getElementById('installBanner').style.display = 'none';
+});
+
+// Service Worker
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js').catch(()=>{});
+}
+
+// Init
+loadSavedState();
+renderDiff();
+renderScore();
+renderTimer();
+renderGames();
+setInterval(renderTimer, 1000);
+</script>
+</body>
+</html>
